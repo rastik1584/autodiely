@@ -7,6 +7,11 @@ use App\CarPart;
 
 class CarRepository
 {
+    /**
+     * create car
+     * @param $request
+     * @return void
+     */
     public function create($request)
     {
         $car = Car::create($request->all('name', 'registration_number', 'is_registered'));
@@ -16,6 +21,12 @@ class CarRepository
         }
     }
 
+    /**
+     * update car
+     * @param $car
+     * @param $request
+     * @return void
+     */
     public function update($car, $request)
     {
         $car->fill($request->all('name', 'registration_number', 'is_registered'))->save();
@@ -25,6 +36,12 @@ class CarRepository
         }
     }
 
+    /**
+     * create car parts
+     * @param $car
+     * @param $request
+     * @return void
+     */
     private function saveParts($car, $request)
     {
         foreach ($request->parts as $part) {

@@ -25,6 +25,7 @@
                     <td class="text-center">{{ car.is_registered ? 'Áno' : 'Nie'}}</td>
                     <td class="text-center">{{ car.parts_count }}</td>
                     <td class="actions">
+                        <button class="btn btn-sm btn-info show-car" @click.prevent="showCar(car)"><i class="fas fa-eye"></i></button>
                         <router-link class="btn btn-sm btn-primary" :to="`/cars/form/${car.id}`"><i class="fas fa-pencil-alt"></i></router-link>
                         <form @submit.prevent="removeCar(car)">
                             <button class="btn btn-sm btn-danger" type="submit"><i class="fas fa-trash-alt"></i></button>
@@ -34,6 +35,7 @@
                 </tbody>
             </table>
         </div>
+        <cars-modal :car="car" :openModal="openModal" @closeModal="closeModal" />
     </div>
 </template>
 
@@ -44,6 +46,7 @@ import Swal from "sweetalert2";
 import VueCookies from 'vue-cookies';
 import { library, dom } from "@fortawesome/fontawesome-svg-core";
 import { fas } from '@fortawesome/free-solid-svg-icons'
+import CarsModal from "./CarsModal";
 library.add(fas);
 dom.watch();
 
@@ -52,6 +55,8 @@ export default {
     data() {
         return {
             cars: [],
+            car: {},
+            openModal: false,
         }
     },
     created() {
@@ -70,6 +75,7 @@ export default {
         ...mapActions([
             'getCars',
             'deleteCar',
+            "getCar",
         ]),
         ...mapMutations([
             'setFilter'
@@ -110,6 +116,16 @@ export default {
                 });
             }
         },
+        showCar(car) {
+            this.getCar(car.id).then(data => {
+                this.openModal = true;
+                this.car = data.data;
+            })
+        },
+        closeModal() {
+            this.car = {};
+            this.openModal = false;
+        }
     },
     computed: {
         ...mapGetters({
@@ -117,6 +133,7 @@ export default {
         }),
     },
     components: {
+        CarsModal,
         CarsFilter,
         VueCookies,
     }
@@ -128,4 +145,5 @@ export default {
         background: #fff;
         padding: 10px;
     }
+
 </style>
